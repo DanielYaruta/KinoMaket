@@ -45,6 +45,13 @@ class MovieListFragment : Fragment() {
             layoutManager = GridLayoutManager(requireContext(), columns)
         }
         adapter.submitList(MovieRepository.movies)
+
+        val navigator = requireActivity() as? MovieNavigator
+        if (navigator?.isTwoPane == true) {
+            viewModel.selectedMovieId.observe(viewLifecycleOwner) { id ->
+                adapter.setSelectedId(id)
+            }
+        }
     }
 
     private fun navigateToDetail(movie: Movie, posterView: View) {
