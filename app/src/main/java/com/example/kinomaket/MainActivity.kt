@@ -2,24 +2,36 @@ package com.example.kinomaket
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.commit
 import androidx.navigation.fragment.NavHostFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MovieNavigator {
 
-    val isTwoPane: Boolean get() = findViewById<View>(R.id.detailContainer) != null
+    private val viewModel: MoviesViewModel by viewModels()
+
+    private var _isTwoPane = false
+    override val isTwoPane: Boolean get() = _isTwoPane
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (isTwoPane && savedInstanceState == null) {
-            supportFragmentManager.commit {
-                replace(R.id.listContainer, MovieListFragment())
-                replace(R.id.detailContainer, MovieDetailFragment.newInstance(MovieRepository.movies[0].id))
+        _isTwoPane = findViewById<View>(R.id.detailContainer) != null
+
+        if (isTwoPane) {
+            if (savedInstanceState == null) {
+                supportFragmentManager.commit {
+                    replace(R.id.listContainer, MovieListFragment())
+                }
+            }
+            viewModel.selectedMovieId.observe(this) { movieId ->
+                supportFragmentManager.commit {
+                    replace(R.id.detailContainer, MovieDetailFragment.newInstance(movieId))
+                }
             }
         }
     }

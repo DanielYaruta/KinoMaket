@@ -150,6 +150,6 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:focusable="true"
-        android:contentDescription="@null" />
+        android:contentDescription="@string/cd_back" />
 
 </FrameLayout>

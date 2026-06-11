@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,6 +17,8 @@ class MovieListFragment : Fragment() {
 
     private var _binding: FragmentMovieListBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: MoviesViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,8 +32,6 @@ class MovieListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Откладываем enter-transition, пока RecyclerView не разложит элементы.
-        // Это нужно при возврате из детали, чтобы shared element transition проигрался корректно.
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
@@ -44,19 +44,18 @@ class MovieListFragment : Fragment() {
             this.adapter = adapter
             layoutManager = GridLayoutManager(requireContext(), columns)
         }
+        adapter.submitList(MovieRepository.movies)
     }
 
     private fun navigateToDetail(movie: Movie, posterView: View) {
-        val mainActivity = requireActivity() as MainActivity
-        if (mainActivity.isTwoPane) {
-            mainActivity.supportFragmentManager.commit {
-                replace(R.id.detailContainer, MovieDetailFragment.newInstance(movie.id))
-            }
+        val navigator = requireActivity() as? MovieNavigator
+        if (navigator?.isTwoPane == true) {
+            viewModel.selectMovie(movie.id)
         } else {
             val extras = FragmentNavigatorExtras(
                 posterView to "movie_poster_${movie.id}"
             )
-            val args = bundleOf("movieId" to movie.id)
+            val args = bundleOf(MovieDetailFragment.ARG_MOVIE_ID to movie.id)
             findNavController().navigate(R.id.action_list_to_detail, args, null, extras)
         }
     }

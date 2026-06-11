@@ -3,14 +3,21 @@ package com.example.kinomaket
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kinomaket.databinding.ItemMovieBinding
 
 class MovieAdapter(
     private val onClick: (movie: Movie, posterView: View) -> Unit
-) : RecyclerView.Adapter<MovieAdapter.ViewHolder>() {
+) : ListAdapter<Movie, MovieAdapter.ViewHolder>(DIFF_CALLBACK) {
 
-    private val movies = MovieRepository.movies
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Movie>() {
+            override fun areItemsTheSame(oldItem: Movie, newItem: Movie) = oldItem.id == newItem.id
+            override fun areContentsTheSame(oldItem: Movie, newItem: Movie) = oldItem == newItem
+        }
+    }
 
     class ViewHolder(val binding: ItemMovieBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -20,10 +27,11 @@ class MovieAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val movie = movies[position]
+        val movie = getItem(position)
         with(holder.binding) {
             moviePoster.transitionName = "movie_poster_${movie.id}"
             moviePoster.setImageResource(movie.posterRes)
+            moviePoster.contentDescription = movie.title
             tvTitle.text = movie.title
             tvGenres.text = movie.genres.joinToString(", ")
             tvAgeBadge.text = movie.ageRating
@@ -31,6 +39,4 @@ class MovieAdapter(
             root.setOnClickListener { onClick(movie, moviePoster) }
         }
     }
-
-    override fun getItemCount() = movies.size
 }
