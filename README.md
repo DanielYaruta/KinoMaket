@@ -20,7 +20,7 @@
 
 ### Планшет — Master-Detail
 
-| Landscape | Portrait |
+| Portrait | Landscape |
 |:-:|:-:|
 | [![Portrait](https://github.com/DanielYaruta/KinoMaket/raw/main/screenshots/screen_tablet_portrait.png)](https://github.com/DanielYaruta/KinoMaket/blob/main/screenshots/screen_tablet_portrait.png) | [![Landscape](https://github.com/DanielYaruta/KinoMaket/raw/main/screenshots/screen_tablet_landscape.png)](https://github.com/DanielYaruta/KinoMaket/blob/main/screenshots/screen_tablet_landscape.png) |
 
