@@ -84,7 +84,7 @@ class MovieDetailFragment : Fragment() {
         binding.tvAgeBadge.text = movie.ageRating
         binding.tvTitle.text = movie.title
         binding.ratingBar.rating = movie.rating
-        binding.tvYearGenres.text = "${movie.year}  |  ${movie.genres.joinToString(", ")}"
+        binding.tvYearGenres.text = getString(R.string.year_genres_format, movie.year, movie.genres.joinToString(", "))
         binding.tvStoryline.text = movie.storyline
         addGenreChips(movie.genres, binding.chipGroupGenres)
         addCastMembers(movie.cast, binding.castContainer)
