@@ -23,7 +23,7 @@ Single Activity + Fragments, Navigation Component, ViewModel.
 | `MovieNavigator` | Интерфейс, через который фрагменты узнают режим (`isTwoPane`) без прямой зависимости на `MainActivity` |
 | `MovieListFragment` | Список фильмов — `RecyclerView` + `GridLayoutManager` |
 | `MovieDetailFragment` | Детализация фильма; получает `movieId` через аргумент `ARG_MOVIE_ID` |
-| `MovieAdapter` | `ListAdapter<Movie>` + `DiffUtil` с ViewBinding |
+| `MovieAdapter` | `ListAdapter<Movie>` + `DiffUtil` с ViewBinding; подсвечивает выбранную карточку в two-pane режиме |
 | `Extensions.kt` | Общие расширения `Int.dp` / `Float.dp` для всего пакета |
 
 ## Навигация
@@ -48,9 +48,15 @@ Single Activity + Fragments, Navigation Component, ViewModel.
 | Экран | Список | Детализация |
 |---|---|---|
 | Телефон | 2 колонки, полный экран | Отдельный фрагмент в back stack |
-| Планшет (≥600dp) | 3 колонки, левая панель (40%) | Правая панель (60%), всегда видна |
+| Планшет portrait (≥600dp) | 2 колонки, левая панель (40%) | Правая панель (60%): постер сверху, текст и актёры снизу |
+| Планшет landscape (≥600dp) | 2 колонки, левая панель (40%) | Правая панель (60%): постер слева, текст и актёры справа |
 
-На планшете `layout-sw600dp/activity_main.xml` задаёт горизонтальный split. При клике `MoviesViewModel.selectMovie()` обновляет деталь без NavController.
+Квалификаторы ресурсов:
+- `layout/` — телефон (одна панель, NavHostFragment)
+- `layout-sw600dp/` — планшет portrait (горизонтальный split, детали вертикальные)
+- `layout-sw600dp-land/` — планшет landscape (горизонтальный split, детали горизонтальные)
+
+При клике `MoviesViewModel.selectMovie()` обновляет деталь без NavController; выбранная карточка получает обводку цветом `colorPrimary`.
 
 ## Стек
 
